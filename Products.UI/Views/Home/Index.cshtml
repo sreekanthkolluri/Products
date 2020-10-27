@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Products</h3>
+                <table border="1">
+                    <tr>
+                        <th>Product Name</th>
+                    </tr>
+                    @foreach (ProductViewModel item in Model)
+                    {
+                        @*@Html.HiddenFor(modelItem => item.Id)*@
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                <input type="button" value="Details" class="btn btn-success"
+                                       onclick="@("GetProductDetails('"+item.Id+"')")" />
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <div class="col-md-6" id="prodDetails" style="display: none; top:100px;">
+                <h3>Products Details</h3>
+
+                <div class="row border border-secondary">
+                    <div class="col-md-6 text-left">Name</div>
+                    <div class="col-md-6 text-left" id="prodName" strong></div>
+                </div>
+                <div class="row border border-secondary">
+                    <div class="col-md-6 text-left">Description</div>
+                    <div class="col-md-6 text-left" id="prodDesc" strong></div>
+                </div>
+                <div class="row border border-secondary">
+                    <div class="col-md-6 text-left">Price</div>
+                    <div class="col-md-6 text-left" id="prodPrice" strong></div>
+                </div>
+                <div class="row border border-secondary">
+                    <div class="col-md-6 text-left">Rating</div>
+                    <div class="col-md-6 text-left" id="prodRating" strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<head runat="server">
+    <title>Index</title>
+    <script type="text/javascript" language="javascript">
+        function GetProductDetails(id) {
+            $.ajax({
+                url: "http://localhost:57689/Product/api/GetProduct?id=" + id,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                type: "GET", /* or type:"GET" or type:"PUT" */
+                dataType: "json",
+                data: {
+                },
+                success: function (result) {
+                    console.log(result);
+                    $("#prodName").html(result.name);
+                    $("#prodDesc").html(result.description);
+                    $("#prodPrice").html(result.price);
+                    $("#prodRating").html(result.rating);
+                    $("#prodDetails").show();
+                },
+                error: function () {
+                    $("#prodDetails").hide();
+                    alert("error");
+
+                }
+            });
+        }
+    </script>
+</head>
